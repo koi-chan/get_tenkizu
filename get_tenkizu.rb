@@ -2,6 +2,7 @@
 
 require 'date'
 require 'open-uri'
+require 'fileutils'
 
 # 取得元のURLと拡張子
 URL = {
@@ -14,7 +15,7 @@ FILE_EXT = '.png'
 target_date = (Date.today - 1).strftime('%y%m%d')
 
 # 保存先のディレクトリパス
-SAVE_DIR = ''
+SAVE_DIR = ARGV[0]
 
 
 begin
