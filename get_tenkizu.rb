@@ -5,7 +5,7 @@ require 'open-uri'
 
 # 取得元のURLと拡張子
 URL = {
-  mono: 'http://www.jma.go.jp/jp/g3/images/jp/'
+  mono: 'http://www.jma.go.jp/jp/g3/images/jp/',
   color: 'http://www.jma.go.jp/jp/g3/images/jp_c/'
 }
 FILE_EXT = '.png'
@@ -17,21 +17,32 @@ target_date = (Date.today - 1).strftime('%y%m%d')
 SAVE_DIR = ''
 
 
-
-
-if Dir.exist?(SAVE_DIR)
+begin
   Dir.chdir(SAVE_DIR)
-else
-  raise "Error: #{SAVE_DIR} は存在しません"
+  FileUtils.touch(target_date)
+  FileUtils.rm(target_date)
+rescue => e
+  print("Error: #{e}\n")
+  raise
 end
+
 
 %w(03 06 09 12 15 18 21).each do |hour|
   URL.each do |type, url|
     filename = "#{target_date}#{hour}_#{type}#{FILE_EXT}"
-    open("#{url}#{target_date}#{hour}#{FILE_EXT}") do |file|
-      open(filename, 'w+b') do |out|
-        out.write(file.read)
+    print("#{filename} を取得中...\t")
+
+    begin
+      open("#{url}#{target_date}#{hour}#{FILE_EXT}") do |file|
+        open(filename, 'w+b') do |out|
+          out.write(file.read)
+        end
       end
+    rescue => e
+      print("[ Failed ]\n")
+      print("  #{e}\n")
+      next
     end
+    print("[ OK ]\n")
   end
 end
